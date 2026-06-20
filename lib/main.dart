@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
@@ -49,34 +50,69 @@ class MainScreen extends ConsumerStatefulWidget {
 }
 
 class _MainScreenState extends ConsumerState<MainScreen> {
-  late StreamSubscription _intentStreamSubscription;
-
-  final List<Widget> _screens = [
-    const YoutubeScreen(),
-    const TiktokScreen(),
-    const InstagramScreen(),
-    const BrowserScreen(),
-    const DownloadsScreen(),
-  ];
+  StreamSubscription? _intentStreamSubscription;
+  late final bool _isDesktop;
+  late final List<Widget> _screens;
+  late final List<NavigationDestination> _destinations;
 
   @override
   void initState() {
     super.initState();
+    _isDesktop = Platform.isWindows || Platform.isMacOS || Platform.isLinux;
 
-    _intentStreamSubscription = ReceiveSharingIntent.instance.getMediaStream().listen((List<SharedMediaFile> value) {
-      if (value.isNotEmpty) {
-        _handleSharedText(value.first.path);
-      }
-    }, onError: (err) {
-      debugPrint("getIntentDataStream error: $err");
-    });
+    _screens = [
+      const YoutubeScreen(),
+      const TiktokScreen(),
+      const InstagramScreen(),
+      if (!_isDesktop) const BrowserScreen(),
+      const DownloadsScreen(),
+    ];
 
-    ReceiveSharingIntent.instance.getInitialMedia().then((List<SharedMediaFile> value) {
-      if (value.isNotEmpty) {
-        _handleSharedText(value.first.path);
-        ReceiveSharingIntent.instance.reset();
-      }
-    });
+    _destinations = [
+      const NavigationDestination(
+        icon: Icon(Icons.play_circle_outline),
+        selectedIcon: Icon(Icons.play_circle),
+        label: 'YouTube',
+      ),
+      const NavigationDestination(
+        icon: Icon(Icons.music_note_outlined),
+        selectedIcon: Icon(Icons.music_note),
+        label: 'TikTok',
+      ),
+      const NavigationDestination(
+        icon: Icon(Icons.camera_alt_outlined),
+        selectedIcon: Icon(Icons.camera_alt),
+        label: 'Instagram',
+      ),
+      if (!_isDesktop)
+        const NavigationDestination(
+          icon: Icon(Icons.explore_outlined),
+          selectedIcon: Icon(Icons.explore),
+          label: 'Browser',
+        ),
+      const NavigationDestination(
+        icon: Icon(Icons.download_outlined),
+        selectedIcon: Icon(Icons.download),
+        label: 'Downloads',
+      ),
+    ];
+
+    if (!_isDesktop) {
+      _intentStreamSubscription = ReceiveSharingIntent.instance.getMediaStream().listen((List<SharedMediaFile> value) {
+        if (value.isNotEmpty) {
+          _handleSharedText(value.first.path);
+        }
+      }, onError: (err) {
+        debugPrint("getIntentDataStream error: $err");
+      });
+
+      ReceiveSharingIntent.instance.getInitialMedia().then((List<SharedMediaFile> value) {
+        if (value.isNotEmpty) {
+          _handleSharedText(value.first.path);
+          ReceiveSharingIntent.instance.reset();
+        }
+      });
+    }
   }
 
   void _handleSharedText(String text) {
@@ -95,13 +131,18 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
   @override
   void dispose() {
-    _intentStreamSubscription.cancel();
+    _intentStreamSubscription?.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final currentIndex = ref.watch(tabIndexProvider);
+    int currentIndex = ref.watch(tabIndexProvider);
+    
+    // Ensure index doesn't go out of bounds on desktop
+    if (currentIndex >= _screens.length) {
+      currentIndex = _screens.length - 1;
+    }
 
     return Scaffold(
       body: IndexedStack(
@@ -113,33 +154,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
         onDestinationSelected: (index) {
           ref.read(tabIndexProvider.notifier).setIndex(index);
         },
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.play_circle_outline),
-            selectedIcon: Icon(Icons.play_circle),
-            label: 'YouTube',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.music_note_outlined),
-            selectedIcon: Icon(Icons.music_note),
-            label: 'TikTok',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.camera_alt_outlined),
-            selectedIcon: Icon(Icons.camera_alt),
-            label: 'Instagram',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.explore_outlined),
-            selectedIcon: Icon(Icons.explore),
-            label: 'Browser',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.download_outlined),
-            selectedIcon: Icon(Icons.download),
-            label: 'Downloads',
-          ),
-        ],
+        destinations: _destinations,
       ),
     );
   }

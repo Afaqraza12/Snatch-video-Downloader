@@ -67,14 +67,26 @@ class DownloadManager {
       String finalPath = tempPath;
 
       try {
-        final directory = Directory('/storage/emulated/0/Download/Snatch');
-        if (!await directory.exists()) {
+        Directory? directory;
+        if (Platform.isWindows || Platform.isMacOS || Platform.isLinux) {
+          final downloadsDir = await getDownloadsDirectory();
+          if (downloadsDir != null) {
+            directory = Directory('${downloadsDir.path}/Snatch');
+          }
+        } else {
+          directory = Directory('/storage/emulated/0/Download/Snatch');
+        }
+
+        if (directory != null && !await directory.exists()) {
           await directory.create(recursive: true);
         }
-        finalPath = '${directory.path}/$fileName';
-        await File(tempPath).copy(finalPath);
+        
+        if (directory != null) {
+          finalPath = '${directory.path}/$fileName';
+          await File(tempPath).copy(finalPath);
+        }
 
-        if (isVideo) {
+        if (isVideo && (Platform.isIOS || Platform.isAndroid)) {
           final hasAccess = await Gal.hasAccess(toAlbum: true);
           if (!hasAccess) {
             await Gal.requestAccess(toAlbum: true);
@@ -83,9 +95,11 @@ class DownloadManager {
         }
 
         // Cleanup temp file
-        final tempFile = File(tempPath);
-        if (await tempFile.exists()) {
-          await tempFile.delete();
+        if (directory != null) {
+          final tempFile = File(tempPath);
+          if (await tempFile.exists()) {
+            await tempFile.delete();
+          }
         }
       } catch (e) {
         debugPrint("Save error: $e");
