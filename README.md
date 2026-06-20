@@ -29,6 +29,7 @@
 
 - **Created by:** Afaq Raza
 - **Designed by:** Mafaz Noor
+- **Ported by:** Faizen Ahmed
 
 > **Open Source & Non-Commercial Use**  
 > Snatch is completely free and open to everyone. If you want to edit, modify, or fork this software to suit your own needs, you are highly encouraged to do so! We only ask that you **give proper credit** to the original creators. *Please note: This software is strictly for non-commercial use.*
