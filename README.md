@@ -5,7 +5,7 @@
   **A powerful, multi-platform video and audio downloader for iOS and Android.**
   
   [![Version](https://img.shields.io/badge/version-1.5.0-blue.svg)]()
-  [![Platform](https://img.shields.io/badge/platform-Android%20|%20iOS-lightgrey.svg)]()
+  [![Platform](https://img.shields.io/badge/platform-Android%20|%20iOS%20|%20Windows%20|%20macOS-lightgrey.svg)]()
   [![License](https://img.shields.io/badge/license-Open%20Source-green.svg)]()
 </div>
 
@@ -13,14 +13,14 @@
 
 ## 🌟 About The App
 
-**Snatch** is a completely free, open-source application designed to download media across your favorite platforms. It features a built-in browser, a native media player, and automatic URL detection to make saving videos as frictionless as possible.
+**Snatch** is a completely free, open-source application designed to download media across your favorite platforms. Available for mobile and desktop, it features a native media player and automatic URL detection to make saving videos as frictionless as possible.
 
 ### ✨ Key Features
-- **Multi-Platform Support:** Download videos and audio from YouTube, TikTok, and Instagram.
+- **Multi-Platform Support:** Download videos and audio from YouTube, TikTok, and Instagram on Android, iOS, Windows, and macOS!
 - **High Definition:** Support for true 1080p, 1440p, and 4K YouTube video streams.
-- **In-App Browser:** Browse websites normally and hit "Download" to fetch the media on the page.
+- **In-App Browser:** Browse websites normally and hit "Download" to fetch the media on the page *(Mobile only)*.
 - **Built-in Media Player:** Watch and listen to your downloaded content instantly without leaving the app.
-- **Smart Intent Sharing:** Share links directly from the YouTube/TikTok/Instagram app to Snatch for instant downloading.
+- **Smart Intent Sharing:** Share links directly from the YouTube/TikTok/Instagram app to Snatch for instant downloading *(Mobile only)*.
 - **Background Downloads:** Robust download manager with cancel, retry, and background support.
 
 ---
@@ -37,14 +37,24 @@
 
 ## 🚀 Installation
 
-### Android
-Download the latest `app-release.apk` from the [Releases](../../releases) tab and install it directly on your device.
+### 🤖 For Android
+Download the latest `snatch-v1.5.0_release.apk` from the [Releases](../../releases) tab, enable **Install from unknown sources**, and install it directly on your device.
 
-### iOS (Sideloading)
-1. Download the `Snatch-iOS-Unsigned-IPA` from the GitHub Actions Artifacts.
-2. Download [Sideloadly](https://sideloadly.io/).
+### 🍏 For iOS (Sideloading)
+1. Download the `Snatch-iOS-Unsigned.ipa` from the [Releases](../../releases) tab.
+2. Download and install [Sideloadly](https://sideloadly.io/).
 3. Drag the `.ipa` into Sideloadly, input your Apple ID, and click **Start**.
 4. Go to **Settings > General > VPN & Device Management** on your iPhone and tap **Trust**.
+
+### 🪟 For Windows
+1. Download the `Snatch-v1.5.0-Windows.zip` from the [Releases](../../releases) tab.
+2. Extract the `.zip` file into a folder on your computer.
+3. Double-click `save_it.exe` to run the app. No installation required!
+
+### 🍎 For macOS
+1. Download the `Snatch-v1.5.0-macOS.zip` from the [Releases](../../releases) tab.
+2. Double-click the `.zip` to extract the `save_it.app` file.
+3. Drag the app into your **Applications** folder and run it!
 
 ---
 
